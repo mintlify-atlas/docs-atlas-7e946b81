@@ -1,0 +1,170 @@
+---
+title: "Clauses catalog"
+description: "Reference for the ISO_27001_CLAUSES export — the three-level hierarchy of clauses, subclauses, and requirements."
+---
+
+`ISO_27001_CLAUSES` is an array exported from `src/store/clausesCatalog.js` that defines the complete three-level hierarchy of ISO 27001:2022 Clauses 4–10. It is the structural backbone of the [Clauses 4–10](/features/clauses) module.
+
+```javascript
+import { ISO_27001_CLAUSES } from './store/clausesCatalog';
+```
+
+## Data hierarchy
+
+The catalog uses a three-level nesting structure:
+
+```
+Clause  (e.g. "4 — Contexto de la organización")
+└── Subclause  (e.g. "4.1 — Comprensión de la organización")
+    └── Requirement  (e.g. "4.1.1 — Identificar factores internos/externos")
+```
+
+Conformance state is tracked at the **requirement** level using `requirementId` as the key in `clauseStates`.
+
+## Data shape
+
+### Clause
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Clause number (e.g. `'4'`) |
+| `name` | `string` | Clause name |
+| `subclauses` | `Subclause[]` | Child subclauses |
+
+### Subclause
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Subclause number (e.g. `'4.1'`) |
+| `name` | `string` | Subclause name |
+| `requirements` | `Requirement[]` | Child requirements |
+
+### Requirement
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Requirement number (e.g. `'4.1.1'`) |
+| `name` | `string` | Requirement name |
+
+```javascript
+// Example structure
+{
+  id: '4',
+  name: 'Contexto de la organización',
+  subclauses: [
+    {
+      id: '4.1',
+      name: 'Comprensión de la organización y de su contexto',
+      requirements: [
+        { id: '4.1.1', name: 'Identificar factores internos/externos' }
+      ]
+    }
+  ]
+}
+```
+
+## The seven clauses (4–10)
+
+ISO 27001 Clauses 4–10 are normative — every requirement is mandatory for certification. The catalog covers all seven clauses:
+
+| Clause | Name | Purpose in ISOwl |
+|---|---|---|
+| **4** | Contexto de la organización | Organisation context, interested parties, scope, and ISMS boundary |
+| **5** | Liderazgo | Top management commitment, ISMS policy, and roles and responsibilities |
+| **6** | Planificación | Risk assessment, risk treatment, and information security objectives — includes the embedded [Risk Management](/features/risk-management) module |
+| **7** | Soporte | Resources, competence, awareness, communication, and documented information |
+| **8** | Operación | Operational planning, risk treatment execution, and change management |
+| **9** | Evaluación del desempeño | Monitoring, measurement, internal audit, and management review |
+| **10** | Mejora | Nonconformity management, corrective action, and continual improvement |
+
+<Info>
+  Clause 6 is the only clause with an embedded sub-module. When you expand Clause 6 in the Clauses page, the risk assessment form and heat map are rendered inline.
+</Info>
+
+## Helper functions
+
+Three helper functions are exported alongside `ISO_27001_CLAUSES` to simplify requirement ID lookups.
+
+### `getAllRequirementIds()`
+
+Returns every requirement ID across all clauses, subclauses, and requirements.
+
+**Returns:** `string[]`
+
+```javascript
+import { getAllRequirementIds } from './store/clausesCatalog';
+
+const ids = getAllRequirementIds();
+// ['4.1.1', '4.1.2', '4.2.1', ... all requirement IDs]
+```
+
+Used internally by compliance metric functions to count total requirements.
+
+### `getClauseRequirementIds(clauseId)`
+
+Returns all requirement IDs that belong to a specific top-level clause.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `clauseId` | `string` | Clause identifier (e.g. `'6'`) |
+
+**Returns:** `string[]`
+
+```javascript
+import { getClauseRequirementIds } from './store/clausesCatalog';
+
+const ids = getClauseRequirementIds('6');
+// All requirement IDs in Clause 6
+```
+
+Used by `getClauseProgress(clauseId)` in the store to calculate per-clause compliance.
+
+### `getSubclauseRequirementIds(subId)`
+
+Returns all requirement IDs that belong to a specific subclause.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `subId` | `string` | Subclause identifier (e.g. `'6.1'`) |
+
+**Returns:** `string[]`
+
+```javascript
+import { getSubclauseRequirementIds } from './store/clausesCatalog';
+
+const ids = getSubclauseRequirementIds('6.1');
+// All requirement IDs in subclause 6.1
+```
+
+Used by `getSubclauseProgress(subclauseId)` to calculate progress at the subclause level.
+
+## How requirement IDs are used
+
+Requirement IDs serve as the primary key for tracking conformance state in the store. The `clauseStates` map in the store is keyed by requirement ID:
+
+```javascript
+clauseStates: {
+  '4.1.1': { status: 'Implemented', maturity: 3, owner: 'CISO', ... },
+  '4.1.2': { status: 'In Progress', maturity: 2, owner: 'IT Team', ... },
+  // ...
+}
+```
+
+When you call `updateRequirementState('4.1.1', { status: 'Implemented' })`, the store sets `clauseStates['4.1.1'].status`.
+
+## Related references
+
+<Columns cols={2}>
+  <Card title="ISO 27001 standard" icon="book" href="/reference/iso-27001">
+    Background on ISO 27001:2022, the ISMS concept, and how each clause maps to ISOwl features.
+  </Card>
+  <Card title="Store reference" icon="database" href="/reference/store">
+    Full reference for `updateRequirementState()`, `getRequirementState()`, and the `clauseStates` field.
+  </Card>
+  <Card title="Clauses feature" icon="list-check" href="/features/clauses">
+    User-facing documentation for the Clauses 4–10 module.
+  </Card>
+  <Card title="ISO controls" icon="shield-check" href="/reference/iso-controls">
+    Reference for the complementary `ISO_CONTROLS` export used in Annex A.
+  </Card>
+</Columns>

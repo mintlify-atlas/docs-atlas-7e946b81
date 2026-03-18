@@ -1,0 +1,115 @@
+---
+title: "Clauses 4–10"
+description: "Requirement-level conformance tracking for all mandatory ISO 27001:2022 clauses."
+---
+
+The Clauses module gives you a structured tree of every requirement in ISO 27001:2022 Clauses 4 through 10. For each requirement you can record its implementation status, maturity level, owner, last review date, and linked evidence.
+
+## Page structure
+
+The page is organised as a three-level hierarchy:
+
+```
+Clause (e.g. Clause 5 — Leadership)
+└── Subclause (e.g. 5.1 — Leadership and commitment)
+    └── Requirement (e.g. 5.1.a — Demonstrate leadership…)
+```
+
+Expand any clause or subclause by clicking its header row. A progress bar on each clause and subclause header shows the percentage of child requirements that are **Implemented**.
+
+## Progress color coding
+
+| Range | Color |
+|---|---|
+| ≥ 80% | Emerald |
+| 50–79% | Amber |
+| 20–49% | Orange |
+| < 20% | Rose |
+
+## Updating a requirement
+
+Each requirement row has an expandable detail panel. To update a requirement:
+
+<Steps>
+  <Step title="Locate the requirement">
+    Navigate to **Clauses** in the sidebar. Expand the relevant clause and subclause until you see the requirement row.
+  </Step>
+  <Step title="Open the detail panel">
+    Click the requirement row to expand the editable fields below it.
+  </Step>
+  <Step title="Set the implementation status">
+    Select one of the four statuses from the dropdown:
+
+    | Status | Meaning |
+    |---|---|
+    | Not started | Work has not begun |
+    | In progress | Partially implemented |
+    | Implemented | Fully conformant |
+    | Not applicable | Requirement does not apply to your scope |
+  </Step>
+  <Step title="Set the maturity level">
+    Drag the **Maturity** slider to the appropriate level (0–5):
+
+    | Level | Label |
+    |---|---|
+    | 0 | Inexistent |
+    | 1 | Initial |
+    | 2 | Repeatable |
+    | 3 | Defined |
+    | 4 | Managed |
+    | 5 | Optimised |
+  </Step>
+  <Step title="Assign an owner">
+    Type the name or role of the person responsible for this requirement in the **Owner** field.
+  </Step>
+  <Step title="Record the last review date">
+    Use the date picker in the **Last reviewed** field to log when this requirement was last assessed.
+  </Step>
+  <Step title="Link evidence (optional)">
+    Click **Manage evidence** to open the evidence picker and attach one or more documents to this requirement. Linked evidence is tracked in the Evidence Repository.
+  </Step>
+</Steps>
+
+<Tip>
+  Requirements marked **Not applicable** are excluded from the compliance percentage calculation for that clause. Use this status carefully — auditors will expect a documented justification for any exclusion.
+</Tip>
+
+## Clause 6 — Risk management integration
+
+Clause 6 (*Planning*) has an embedded risk management panel directly inside the clauses page. When you expand Clause 6, you will see:
+
+- **Risk Assessment Form** — register a new risk entry without leaving the Clauses module
+- **Risk Heat Map** — 5×5 visual matrix of all current risks
+- **Asset Inventory** — quick view of the asset register
+
+This integration reflects the direct linkage between ISO 27001 Clause 6.1 (actions to address risks and opportunities) and the risk treatment process. All data entered here is shared with the dedicated [Risk Management](/features/risk-management) and [Asset Management](/features/asset-management) modules.
+
+## Bulk review workflow
+
+To work through all requirements in a clause efficiently:
+
+1. Sort the clause list by compliance percentage — the lowest-scoring clause appears first in the [Dashboard](/features/dashboard) clause ranking.
+2. Open the lowest-scoring clause and expand all its subclauses.
+3. Work through each requirement from top to bottom, setting statuses and maturity levels.
+4. Check the clause progress bar after each save — it updates in real time.
+
+<Note>
+  Changes are saved automatically to `localStorage` as you make them. There is no explicit save button.
+</Note>
+
+## Frequently asked questions
+
+<AccordionGroup>
+  <Accordion title="Does changing a status immediately affect the dashboard?">
+    Yes. The Global Compliance donut on the Executive Dashboard recalculates in real time whenever you update a requirement status. Navigating back to the dashboard will show the updated percentage.
+  </Accordion>
+  <Accordion title="Can I add custom requirements?">
+    The clause tree is derived from the ISO 27001:2022 standard and cannot be modified. You can, however, add free-form notes to any requirement in the notes field within the detail panel.
+  </Accordion>
+  <Accordion title="What happens if I mark a requirement as Not applicable?">
+    The requirement is excluded from both the numerator and denominator of the clause compliance calculation. This raises the reported percentage for that clause even though no new implementation work has been done.
+  </Accordion>
+  <Accordion title="How do I link evidence to a requirement?">
+    Click **Manage evidence** in the requirement detail panel. The evidence picker shows all documents in the Evidence Repository that are not yet linked to this requirement. Select one or more and confirm.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,85 @@
+---
+title: "Statement of Applicability export"
+description: "Export a PDF Statement of Applicability covering all 93 Annex A controls for certification audits and client reporting."
+---
+
+The Statement of Applicability (SoA) is a mandatory ISO 27001 document. It lists every Annex A control, declares whether each control is applicable to your organization, and records its implementation status. Certification auditors use the SoA to verify that your control selection is complete and justified.
+
+ISOwl generates the SoA as a downloadable PDF directly from your Annex A control data.
+
+## What the SoA PDF contains
+
+The exported document covers all **93 Annex A controls** drawn from ISO/IEC 27002. For each control, the PDF records:
+
+| Field | Description |
+|---|---|
+| Control ID | Annex A reference (e.g., A.5.1, A.8.24) |
+| Control name | Short title from ISO/IEC 27002 |
+| Domain | Organizational, People, Physical, or Technological |
+| Status | Current evaluation state (e.g., Implemented, In Progress, Not Applicable) |
+| Responsible person | Individual or team accountable for the control |
+| Last review date | Date the control record was last updated |
+
+<Info>
+  Controls marked as **Not Applicable** are still included in the SoA. ISO 27001 requires that exclusions be documented and justified, not omitted.
+</Info>
+
+## When to use the SoA export
+
+<Columns cols={2}>
+  <Card title="Certification audit" icon="badge-check">
+    Provide the SoA to your certification body before a stage 2 audit. Auditors will cross-reference it against your implemented controls and evidence.
+  </Card>
+  <Card title="Surveillance audit" icon="calendar-check">
+    Demonstrate that your control set remains current and that any changes since the last audit are reflected in the SoA.
+  </Card>
+  <Card title="Client reporting" icon="file-text">
+    Share a client's SoA with their own leadership or board to show the current state of their Annex A program.
+  </Card>
+  <Card title="Internal review" icon="search">
+    Use the SoA as a working document during internal audits to identify gaps, assign responsibility, and track review cadence.
+  </Card>
+</Columns>
+
+## How to export the SoA
+
+<Steps>
+  <Step title="Select the correct workspace">
+    Confirm that the active workspace shown in the top navigation bar is the organization whose SoA you want to export. Switch workspaces from the [Clients admin page](/administration/client-management) if needed.
+  </Step>
+  <Step title="Navigate to Annex A">
+    Click **Annex A** in the main navigation sidebar to open the controls library.
+  </Step>
+  <Step title="Click Exportar SoA (PDF)">
+    Locate the **Exportar SoA (PDF)** button at the top of the Annex A page and click it. ISOwl reads the current state of all 93 controls and generates the PDF.
+  </Step>
+  <Step title="Download the file">
+    The PDF downloads automatically. File it with your ISMS document registry using your organization's version control process.
+  </Step>
+</Steps>
+
+<Warning>
+  The SoA export captures the state of your controls **at the moment of export**. If controls are updated after the export, the document on file will be out of date. Re-export after any significant change to your control set.
+</Warning>
+
+## Keeping the SoA current
+
+ISO 27001 requires that the SoA be maintained as a living document. Best practices:
+
+- Re-export the SoA after adding new controls, changing applicability decisions, or updating responsible owners.
+- Include the export date in your document registry entry so reviewers know which version is current.
+- Store previous versions for audit traceability — auditors may ask to see how the SoA evolved between audit cycles.
+
+<Tip>
+  Set a recurring reminder to review and re-export the SoA at least once per year, or whenever a significant change to your ISMS scope occurs.
+</Tip>
+
+## Roles that can export the SoA
+
+| Role | Can export |
+|---|---|
+| CISO | Yes |
+| Owner | Yes |
+| Auditor | No |
+
+See [Roles and permissions](/administration/roles-permissions) for details on access control.

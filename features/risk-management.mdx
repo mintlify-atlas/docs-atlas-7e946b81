@@ -1,0 +1,125 @@
+---
+title: "Risk management"
+description: "Register, score, and treat information security risks using an ISO 31000 / ISO 27005 aligned risk register and heat map."
+---
+
+The Risk Management module provides a structured risk register and a 5×5 visual heat map. Each risk is linked to an asset in the [Asset Inventory](/features/asset-management), scored by likelihood and impact, and assigned a treatment strategy.
+
+## Page layout
+
+The page is split into two panels:
+
+<Columns cols={2}>
+  <Card title="Risk assessment form" icon="pen-to-square">
+    A form for registering new risks. Fill in the asset, threat, vulnerability, scores, and treatment details, then save to add the risk to the register.
+  </Card>
+  <Card title="Risk heat map" icon="grid-2">
+    A 5×5 matrix plotting all registered risks by their residual likelihood and impact. Colour zones indicate the severity level.
+  </Card>
+</Columns>
+
+## Registering a risk
+
+<Steps>
+  <Step title="Open the Risk page">
+    Navigate to **Risk** in the sidebar. The risk assessment form is on the left and the heat map on the right.
+  </Step>
+  <Step title="Select the asset">
+    Choose the affected asset from the **Asset** dropdown. The list is populated from your [Asset Inventory](/features/asset-management). If the asset does not exist yet, add it there first.
+  </Step>
+  <Step title="Describe the threat and vulnerability">
+    - **Threat** — the event or actor that could cause harm (e.g. *Ransomware*, *Accidental data deletion*).
+    - **Vulnerability** — the weakness the threat exploits (e.g. *No backup policy*, *Unpatched systems*).
+  </Step>
+  <Step title="Score inherent risk">
+    Set the **Likelihood** (1–5) and **Impact** (1–5) for the risk before any controls are applied.
+
+    The inherent risk score is calculated automatically:
+
+    ```
+    Inherent risk = Likelihood × Impact
+    ```
+  </Step>
+  <Step title="Choose a treatment strategy">
+    Select one of the four ISO 31000-aligned treatment options:
+
+    | Treatment | Description |
+    |---|---|
+    | Mitigate | Reduce likelihood or impact through controls |
+    | Accept | Acknowledge the risk and take no further action |
+    | Transfer | Shift risk to a third party (e.g. insurance, outsourcing) |
+    | Avoid | Eliminate the activity that causes the risk |
+  </Step>
+  <Step title="Describe the mitigation control (if mitigating)">
+    If the treatment is **Mitigate**, enter the specific control or measure being applied in the **Mitigation control** field.
+  </Step>
+  <Step title="Score residual risk">
+    After describing the treatment, set the **Residual likelihood** and **Residual impact** to reflect the remaining risk after controls are applied.
+
+    ```
+    Residual risk = Residual likelihood × Residual impact
+    ```
+  </Step>
+  <Step title="Save the risk">
+    Click **Add risk** to save the entry. The risk appears in the heat map immediately.
+  </Step>
+</Steps>
+
+## Risk heat map
+
+The heat map plots every registered risk on a 5×5 grid with **Probability** on the y-axis and **Impact** on the x-axis. Risks are positioned using their **residual** likelihood and impact scores.
+
+### Color zones
+
+| Score range | Color | Severity |
+|---|---|---|
+| 1–4 | Green | Low |
+| 5–9 | Yellow | Medium |
+| 10–14 | Orange | High |
+| 15–25 | Red | Critical |
+
+<Note>
+  Risks positioned in the red zone (score ≥ 15) require immediate attention. Review the treatment strategy for any critical risk and consider whether the residual score can be reduced through additional controls.
+</Note>
+
+## Risk data reference
+
+Each risk entry contains the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Auto-generated identifier (e.g. R001) |
+| `assetId` | string | Linked asset identifier |
+| `assetName` | string | Display name of the linked asset |
+| `threat` | string | Description of the threat |
+| `vulnerability` | string | Description of the weakness |
+| `likelihood` | 1–5 | Inherent likelihood score |
+| `impact` | 1–5 | Inherent impact score |
+| `inherentRisk` | 1–25 | Likelihood × Impact |
+| `treatment` | enum | Mitigate, Accept, Transfer, or Avoid |
+| `mitigationControl` | string | Description of the applied control |
+| `residualLikelihood` | 1–5 | Likelihood after treatment |
+| `residualImpact` | 1–5 | Impact after treatment |
+| `residualRisk` | 1–25 | Residual likelihood × Residual impact |
+| `date` | ISO date | Date the risk was registered |
+
+## Clause 6 integration
+
+The risk assessment form and heat map are also embedded directly inside **Clause 6** of the [Clauses 4–10](/features/clauses) module. Any risks you add from either location are shared — the register is the same data source regardless of where you enter risks.
+
+## Frequently asked questions
+
+<AccordionGroup>
+  <Accordion title="Can I edit or delete a risk after saving it?">
+    Yes. Click any risk entry in the register table to open its edit form. To delete a risk, use the delete action on the risk row. Note that deleting an asset also removes all risks associated with that asset.
+  </Accordion>
+  <Accordion title="What does a residual risk score of 1 mean?">
+    A residual risk score of 1 means both residual likelihood and residual impact are set to 1, the minimum values. This indicates the risk is considered negligible after treatment. Verify that the stated control actually achieves this level of reduction before accepting the score.
+  </Accordion>
+  <Accordion title="How do I link a risk to an Annex A control?">
+    Use the **Mitigation control** field to reference the Annex A control ID (e.g. *A.8.13 — Information backup*). Formal linkage between the risk register and the Annex A control table is not yet automated — it is managed through consistent naming conventions.
+  </Accordion>
+  <Accordion title="Is there a limit to the number of risks I can register?">
+    No hard limit is enforced. However, `localStorage` has a browser-imposed storage cap (typically 5–10 MB). For most organisations, this limit is well above what a realistic risk register requires.
+  </Accordion>
+</AccordionGroup>

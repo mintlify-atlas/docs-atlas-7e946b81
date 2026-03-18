@@ -1,0 +1,95 @@
+---
+title: "Client management"
+description: "Create and manage client workspaces as an Agency Admin in ISOwl."
+---
+
+The **Clients** admin page lets Agency Admins provision new client workspaces, view a maturity snapshot for every tenant, and switch the active workspace.
+
+<Warning>
+  The Clients admin page is only accessible to users with the **Agency Admin** role (`admin@agencia.com` by default). Users with the Owner or Auditor role cannot access this page.
+</Warning>
+
+## Accessing the Clients admin page
+
+<Steps>
+  <Step title="Sign in as Agency Admin">
+    Log in with an account that has the CISO role and is assigned to the **AGENCY** tenant (e.g., `admin@agencia.com`).
+  </Step>
+  <Step title="Open the Clients page">
+    Click **Clients** in the main navigation sidebar. The page lists all provisioned tenants as overview cards.
+  </Step>
+</Steps>
+
+## Client overview cards
+
+Each card on the Clients page shows a snapshot of one tenant:
+
+| Field | Description |
+|---|---|
+| Tenant name | The company name provided at creation |
+| Tenant ID | The system-generated ID (e.g., `CLIENT_1712345678`) |
+| Maturity % | Statement of Applicability maturity based on Annex A controls |
+| Active risks | Number of open risks in the client's risk register |
+| Active badge | Shown on the workspace currently loaded in your session |
+
+Click any card to switch the active workspace to that client.
+
+## Creating a new client workspace
+
+<Steps>
+  <Step title="Open the creation form">
+    On the Clients admin page, locate the **New client** form at the bottom of the page.
+  </Step>
+  <Step title="Enter the company name">
+    Type the client's company name in the input field. This name appears on the overview card and in the workspace switcher.
+  </Step>
+  <Step title="Submit the form">
+    Click **Create client**. ISOwl provisions a new isolated workspace immediately.
+  </Step>
+</Steps>
+
+### What gets provisioned
+
+When you create a new client workspace, ISOwl initializes the following:
+
+- **93 Annex A controls** — all set to `No Evaluado` (not evaluated)
+- **Empty clause states** — clauses 4–10 with no requirements filled in
+- **Empty arrays** for assets, risks, audits, evidence, and findings
+- **Unique tenant ID** — generated as `CLIENT_` followed by the current Unix timestamp
+
+<Note>
+  The new workspace is completely blank. No data from your agency workspace or any other client is copied in. Each client starts from a clean ISO 27002 control baseline.
+</Note>
+
+## Switching between workspaces
+
+You can switch the active workspace at any time from the Clients admin page:
+
+<Steps>
+  <Step title="Go to the Clients page">
+    Navigate to **Clients** in the sidebar.
+  </Step>
+  <Step title="Click the target client card">
+    Click the card for the workspace you want to load. ISOwl saves the current workspace state and loads the selected client's data.
+  </Step>
+  <Step title="Confirm the active workspace">
+    Check the top navigation bar to confirm the workspace name has updated. The selected client card also displays the **Active** badge.
+  </Step>
+</Steps>
+
+<Tip>
+  Always verify the active workspace name before creating or editing records. Changes are saved to whichever workspace is currently active.
+</Tip>
+
+## Data isolation between workspaces
+
+When you switch workspaces, ISOwl:
+
+1. Serializes the current workspace's full state (clauses, controls, assets, risks, audits, evidence, findings) into an internal store.
+2. Loads the target workspace's state from the same store.
+
+No data is shared between tenants. Editing a control in one workspace has no effect on any other workspace.
+
+<Warning>
+  Deleting a client workspace is a permanent operation. All associated ISMS data — controls, risks, evidence, findings — will be lost. There is no undo.
+</Warning>

@@ -1,0 +1,140 @@
+---
+title: 'Authentication & Access'
+description: 'User authentication, role-based access control, and multi-tenant workspace switching in ISOwl.'
+---
+
+## Login system
+
+ISOwl uses a **hardcoded credential store** — there is no backend authentication server, identity provider, or token exchange. Credentials are validated entirely in the browser against fixed values in the application state.
+
+This design makes ISOwl suitable as a self-contained demo or internal tool without any infrastructure dependencies.
+
+<Warning>
+  Do not use ISOwl's built-in credentials to protect sensitive production data. The login mechanism is not a substitute for a real authentication system.
+</Warning>
+
+## Demo accounts
+
+| Account | Email | Password | Role | Workspace |
+|---|---|---|---|---|
+| Agency Admin | `admin@agencia.com` | `admin123` | CISO | Agency + all client tenants |
+| Client Owner | `owner@cliente.com` | `cliente123` | OWNER | CLIENT\_A only |
+
+These are the only two accounts available by default. No user creation or password reset functionality exists.
+
+## Role-based access control
+
+Every authenticated session has one of three roles. The role determines what actions a user can perform across all modules.
+
+<Tabs>
+  <Tab title="CISO">
+    The **CISO** role has full administrative access.
+
+    | Capability | Access |
+    |---|---|
+    | View all modules and dashboards | Yes |
+    | Mark clause requirements as implemented | Yes |
+    | Evaluate and update Annex A controls | Yes |
+    | Add, edit, and delete assets | Yes |
+    | Create and update risks | Yes |
+    | Upload and delete evidence | Yes |
+    | Manage findings and improvement actions | Yes |
+    | Switch between client tenants | Yes |
+    | Access Clients Admin page | Yes |
+    | Export PDF reports | Yes |
+
+    The Agency Admin account (`admin@agencia.com`) is always assigned the CISO role.
+  </Tab>
+  <Tab title="AUDITOR">
+    The **AUDITOR** role has read-only access. Auditors can review the entire ISMS workspace but cannot make changes.
+
+    | Capability | Access |
+    |---|---|
+    | View all modules and dashboards | Yes |
+    | Mark or change clause requirement states | No |
+    | Evaluate or update Annex A controls | No |
+    | Add, edit, or delete assets | No |
+    | Create or modify risks | No |
+    | Upload or delete evidence | No |
+    | Manage findings and improvement actions | No |
+    | Export PDF reports | Yes |
+
+    <Tip>
+      Assign the AUDITOR role when sharing access with an external auditor or independent reviewer to prevent accidental modifications.
+    </Tip>
+  </Tab>
+  <Tab title="OWNER">
+    The **OWNER** role is for client organisations. An owner can fully manage their own tenant workspace but cannot access the agency workspace or other clients.
+
+    | Capability | Access |
+    |---|---|
+    | View their own tenant workspace | Yes |
+    | Manage clauses, controls, assets, and risks | Yes |
+    | Upload and manage evidence | Yes |
+    | Access Clients Admin page | No |
+    | Switch to agency or other client tenants | No |
+    | Export PDF reports | Yes |
+
+    The Client Owner account (`owner@cliente.com`) is assigned the OWNER role and is locked to the `CLIENT_A` workspace.
+  </Tab>
+</Tabs>
+
+## Multi-tenant workspaces
+
+ISOwl supports multiple isolated workspaces called **tenants**. Each tenant has its own ISMS data — clauses, controls, assets, risks, and evidence are completely separate between tenants.
+
+There are two types of tenants:
+
+- **Agency workspace (`AGENCY`)** — the consulting firm's own internal ISMS. The Agency Admin lands here by default after login.
+- **Client workspaces (`CLIENT_A`, and any dynamically created clients)** — one isolated workspace per managed client.
+
+Data written in one tenant is never visible in another.
+
+### How to switch tenants
+
+Switching tenants is available only to users with the **CISO** role.
+
+<Steps>
+  <Step title="Open the Clients Admin page">
+    Navigate to **Clients** (`/clients`) in the sidebar. This page lists all client workspaces created in the agency.
+  </Step>
+  <Step title="Select a client">
+    Click on the client you want to manage. ISOwl switches the active tenant to that client's workspace. The sidebar and all module data now reflect that client's ISMS.
+  </Step>
+  <Step title="Return to the Agency workspace">
+    To switch back to the agency's own ISMS, click the agency workspace entry on the Clients Admin page, or use any navigation link that returns you to the agency context.
+  </Step>
+</Steps>
+
+<Note>
+  The current active tenant is shown in the application header. Always verify the active tenant before making changes to avoid editing the wrong workspace.
+</Note>
+
+## How to log out
+
+Click your user profile or the logout option in the application navigation. On logout, the session is cleared:
+
+- `isAuthenticated` is set to `false`
+- The active user and role are removed from state
+- The active tenant resets to `AGENCY`
+
+You are redirected to the login screen. Workspace data stored in `localStorage` is **not deleted** on logout — it persists for the next session.
+
+## localStorage persistence
+
+All ISMS data and session state is stored in `localStorage` under the key `sgsi-storage`.
+
+<AccordionGroup>
+  <Accordion title="What persists after logout?">
+    Workspace data (clauses, controls, assets, risks, evidence) persists across logout and browser restarts. Only the active session (authenticated user, current role) is cleared on logout.
+  </Accordion>
+  <Accordion title="What happens if I clear browser storage?">
+    Clearing `localStorage` — via browser developer tools, a browser reset, or a privacy-clearing extension — **permanently deletes all ISOwl data**. This action cannot be undone. Export PDF reports regularly to preserve a record of your ISMS state.
+  </Accordion>
+  <Accordion title="Is data shared between browsers or devices?">
+    No. `localStorage` is scoped to a single browser on a single device. Data is not synced across browsers, profiles, or machines.
+  </Accordion>
+  <Accordion title="Can I inspect the raw data?">
+    Yes. Open your browser's developer tools, go to **Application > Local Storage**, and find the `sgsi-storage` key. The value is a JSON object containing the full Zustand state tree.
+  </Accordion>
+</AccordionGroup>

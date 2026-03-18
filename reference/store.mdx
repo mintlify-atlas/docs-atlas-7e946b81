@@ -1,0 +1,534 @@
+---
+title: "Store reference"
+description: "Complete reference for the Zustand global state store — state shape, all methods, and persistence behavior."
+---
+
+ISOwl uses a single [Zustand](https://github.com/pmndrs/zustand) store with the `persist` middleware to manage all application state. The store is exported from `src/store/useSGSIStore.js` and is the single source of truth for authentication, tenant data, compliance metrics, assets, risks, controls, audits, evidence, and findings.
+
+```javascript
+import { useSGSIStore } from './store/useSGSIStore';
+```
+
+## State shape
+
+### Authentication and session
+
+| Field | Type | Description |
+|---|---|---|
+| `isAuthenticated` | `boolean` | Whether the current user is logged in |
+| `authUser` | `object` | Authenticated user record — see shape below |
+| `currentUserRole` | `'CISO' \| 'AUDITOR' \| 'OWNER'` | Active role for the current session |
+
+**`authUser` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | `string` | Display name |
+| `email` | `string` | Login email |
+| `role` | `string` | Assigned role |
+| `type` | `'AGENCY' \| 'CLIENT'` | Account type — agencies can manage multiple tenants |
+| `tenantId` | `string?` | Tenant identifier (CLIENT accounts only) |
+
+### Multi-tenant
+
+| Field | Type | Description |
+|---|---|---|
+| `currentTenant` | `string` | ID of the currently active tenant |
+| `tenants` | `Array<{ id: string, name: string }>` | All tenants accessible to the current user |
+| `tenantData` | `object` | Per-tenant data keyed by `tenantId` — see structure below |
+
+**`tenantData[tenantId]` shape:**
+
+| Key | Type | Description |
+|---|---|---|
+| `clauses` | `Clause[]` | Clause list for the tenant |
+| `controls` | `Control[]` | Annex A controls for the tenant |
+| `clauseStates` | `object` | Requirement state map keyed by requirement ID |
+| `assets` | `Asset[]` | Asset inventory |
+| `risks` | `Risk[]` | Risk register |
+| `audits` | `Audit[]` | Audit records |
+| `evidences` | `Evidence[]` | Evidence items |
+| `findings` | `Finding[]` | PAC findings |
+
+### Active workspace data
+
+The following fields reflect the **currently active tenant**. They are updated automatically when you call `switchTenant`.
+
+#### Clauses
+
+| Field | Type | Description |
+|---|---|---|
+| `clauses` | `Array<{ id: string, name: string, progress: number }>` | ISO 27001 clause list |
+| `clauseStates` | `{ [reqId]: ClauseState }` | Requirement state map |
+
+**`ClauseState` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `status` | `string` | Conformance status |
+| `maturity` | `number` | Maturity level 0–5 |
+| `owner` | `string` | Responsible person or team |
+| `lastReviewDate` | `string` | ISO date of last review |
+| `notes` | `string` | Free-text notes |
+
+#### Controls
+
+| Field | Type | Description |
+|---|---|---|
+| `controls` | `Control[]` | ISO 27002:2022 Annex A control list |
+
+**`Control` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Control identifier (e.g. `A.5.1`) |
+| `domain` | `string` | Control domain (e.g. `Organizacionales`) |
+| `name` | `string` | Control name |
+| `description` | `string` | Control description |
+| `status` | `string` | Evaluation status — defaults to `'No Evaluado'` |
+| `responsible` | `string` | Responsible person or team |
+| `lastReview` | `string` | ISO date of last review |
+
+#### Assets
+
+| Field | Type | Description |
+|---|---|---|
+| `assets` | `Asset[]` | Asset inventory for the active tenant |
+
+**`Asset` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Asset identifier |
+| `name` | `string` | Asset name |
+| `type` | `string` | Asset type (e.g. server, application) |
+| `owner` | `string` | Asset owner |
+| `c` | `number` | Confidentiality score 1–5 |
+| `i` | `number` | Integrity score 1–5 |
+| `d` | `number` | Availability score 1–5 |
+
+#### Risks
+
+| Field | Type | Description |
+|---|---|---|
+| `risks` | `Risk[]` | Risk register for the active tenant |
+
+**`Risk` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Auto-generated identifier |
+| `assetId` | `string` | Linked asset ID |
+| `assetName` | `string` | Display name of linked asset |
+| `threat` | `string` | Threat description |
+| `vulnerability` | `string` | Vulnerability description |
+| `likelihood` | `number` | Inherent likelihood 1–5 |
+| `impact` | `number` | Inherent impact 1–5 |
+| `inherentRisk` | `number` | `likelihood × impact` (1–25) |
+| `treatment` | `string` | Treatment strategy |
+| `mitigationControl` | `string` | Applied control description |
+| `residualLikelihood` | `number` | Residual likelihood 1–5 |
+| `residualImpact` | `number` | Residual impact 1–5 |
+| `residualRisk` | `number` | `residualLikelihood × residualImpact` (1–25) |
+| `date` | `string` | ISO date the risk was registered |
+
+#### Audits
+
+| Field | Type | Description |
+|---|---|---|
+| `audits` | `Audit[]` | Audit records for the active tenant |
+
+**`Audit` shape (key fields):**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Audit identifier |
+| `type` | `string` | Audit type |
+| `fecha` | `string` | ISO date of the audit |
+| `status` | `string` | Audit status |
+
+#### Evidence
+
+| Field | Type | Description |
+|---|---|---|
+| `evidences` | `Evidence[]` | Evidence items for the active tenant |
+
+**`Evidence` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Evidence identifier |
+| `name` | `string` | Evidence name |
+| `category` | `string` | Category |
+| `description` | `string` | Description |
+| `relatedTo` | `string` | Control or requirement reference |
+| `fileName` | `string` | Uploaded file name |
+| `version` | `string` | Evidence version |
+| `uploadedAt` | `string` | ISO date of upload |
+
+#### Findings
+
+| Field | Type | Description |
+|---|---|---|
+| `findings` | `Finding[]` | PAC findings for the active tenant |
+
+**`Finding` shape:**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Finding identifier |
+| `type` | `string` | Finding type (e.g. Major NC, Minor NC, Observation) |
+| `requirementId` | `string` | Related ISO 27001 requirement ID |
+| `description` | `string` | Description of the finding |
+| `pac` | `string` | Corrective action plan |
+| `responsible` | `string` | Person responsible for closure |
+| `dueDate` | `string` | Target closure date |
+| `progress` | `number` | Completion percentage 0–100 |
+| `closingEvidence` | `string` | Evidence reference for closure |
+| `status` | `string` | Finding status |
+| `createdAt` | `string` | ISO date the finding was created |
+
+---
+
+## Authentication methods
+
+### `login(email, password)`
+
+Attempts to authenticate the user with the provided credentials.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `email` | `string` | User email address |
+| `password` | `string` | User password |
+
+**Returns:** `boolean` — `true` if authentication succeeded, `false` otherwise.
+
+```javascript
+const success = useSGSIStore.getState().login('user@example.com', 'password');
+```
+
+### `logout()`
+
+Clears the authenticated session and resets auth state.
+
+**Returns:** `void`
+
+---
+
+## Multi-tenant methods
+
+### `switchTenant(newTenantId)`
+
+Switches the active workspace to the specified tenant. Loads that tenant's data into the top-level active workspace fields (`clauses`, `controls`, `assets`, `risks`, etc.).
+
+| Parameter | Type | Description |
+|---|---|---|
+| `newTenantId` | `string` | The ID of the tenant to activate |
+
+**Returns:** `void`
+
+### `addTenant(name)`
+
+Creates a new tenant with an auto-generated ID and appends it to the `tenants` list.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `name` | `string` | Display name for the new tenant |
+
+**Returns:** `{ id: string, name: string }` — the newly created tenant object.
+
+### `setRole(role)`
+
+Updates the active user role for the current session.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `role` | `'CISO' \| 'AUDITOR' \| 'OWNER'` | The role to activate |
+
+**Returns:** `void`
+
+---
+
+## Compliance metrics methods
+
+All metrics methods read from the active tenant's data. Call them on a component level using the `useSGSIStore` hook or directly via `useSGSIStore.getState()`.
+
+### `getGlobalCompliance()`
+
+Returns the overall compliance percentage across all ISO 27001 Clauses 4–10 requirements.
+
+**Returns:** `number` — value between 0 and 100.
+
+### `getMaturityScore()`
+
+Returns the overall Annex A maturity score based on implemented controls.
+
+**Returns:** `number` — value between 0 and 100.
+
+### `getClauseProgress(clauseId)`
+
+Returns the compliance percentage for a specific top-level clause.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `clauseId` | `string` | Clause identifier (e.g. `'4'`, `'5'`) |
+
+**Returns:** `number` — value between 0 and 100.
+
+### `getSubclauseProgress(subclauseId)`
+
+Returns the compliance percentage for a specific subclause.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `subclauseId` | `string` | Subclause identifier (e.g. `'4.1'`, `'6.1'`) |
+
+**Returns:** `number` — value between 0 and 100.
+
+### `getClauseMaturity(clauseId)`
+
+Returns the average maturity score for all requirements within a clause.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `clauseId` | `string` | Clause identifier |
+
+**Returns:** `number` — float between 0 and 5.
+
+### `getDomainProgress()`
+
+Returns progress data for all four Annex A control domains.
+
+**Returns:** `Array<{ domain: string, score: number, total: number }>`
+
+```javascript
+// Example output
+[
+  { domain: 'Organizacionales', score: 24, total: 37 },
+  { domain: 'Personas',         score: 6,  total: 8  },
+  { domain: 'Físicos',          score: 10, total: 14 },
+  { domain: 'Tecnológicos',     score: 20, total: 34 },
+]
+```
+
+### `getOpenMajorNCs()`
+
+Counts the number of open major nonconformity findings.
+
+**Returns:** `number`
+
+---
+
+## Requirement state methods
+
+### `updateRequirementState(reqId, state)`
+
+Persists the conformance state for a single requirement.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `reqId` | `string` | Requirement identifier (e.g. `'4.1.1'`) |
+| `state` | `object` | Partial or full state — see fields below |
+
+**`state` fields:**
+
+| Field | Type | Description |
+|---|---|---|
+| `status` | `string` | Conformance status |
+| `maturity` | `number` | Maturity level 0–5 |
+| `owner` | `string` | Responsible person or team |
+| `lastReviewDate` | `string` | ISO date |
+| `notes` | `string` | Free-text notes |
+
+**Returns:** `void`
+
+### `getRequirementState(reqId)`
+
+Retrieves the current state for a single requirement.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `reqId` | `string` | Requirement identifier |
+
+**Returns:** `{ status, maturity, owner, lastReviewDate, notes }`
+
+---
+
+## Asset methods
+
+### `addAsset(asset)`
+
+Adds a new asset to the inventory.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `asset` | `Asset` | Asset object — see Asset shape above |
+
+**Returns:** `void`
+
+### `updateAsset(id, updatedData)`
+
+Merges `updatedData` into the existing asset record.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Asset identifier |
+| `updatedData` | `Partial<Asset>` | Fields to update |
+
+**Returns:** `void`
+
+### `deleteAsset(id)`
+
+Removes the asset and all risks linked to it.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Asset identifier |
+
+**Returns:** `void`
+
+<Warning>
+  Deleting an asset permanently removes all risks that reference it. This action cannot be undone.
+</Warning>
+
+### `getAssetCriticality(c, i, d)`
+
+Calculates the criticality score for an asset given its CIA scores.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `c` | `number` | Confidentiality score 1–5 |
+| `i` | `number` | Integrity score 1–5 |
+| `d` | `number` | Availability score 1–5 |
+
+**Returns:** `number` — `max(c, i, d)`
+
+### `getCategoryColor(criticality)`
+
+Returns the Tailwind CSS color class for a given criticality score.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `criticality` | `number` | Criticality score 1–5 |
+
+**Returns:** `string` — Tailwind utility class (e.g. `'text-red-500'`).
+
+---
+
+## Risk methods
+
+### `addRisk(riskData)`
+
+Appends a new risk to the register.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `riskData` | `Risk` | Risk object — see Risk shape above |
+
+**Returns:** `void`
+
+---
+
+## Annex A control methods
+
+### `updateControlStatus(id, newStatus)`
+
+Updates the evaluation status of an Annex A control.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Control identifier (e.g. `'A.5.1'`) |
+| `newStatus` | `string` | New status value |
+
+**Returns:** `void`
+
+---
+
+## Audit and finding methods
+
+### `addAuditFinding(finding)`
+
+Adds a finding record linked to an audit.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `finding` | `object` | Finding data object |
+
+**Returns:** `void`
+
+### `addFinding(finding)`
+
+Adds a new PAC finding to the findings list.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `finding` | `Finding` | Finding object — see Finding shape above |
+
+**Returns:** `void`
+
+### `updateFinding(id, data)`
+
+Merges `data` into an existing PAC finding.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Finding identifier |
+| `data` | `Partial<Finding>` | Fields to update |
+
+**Returns:** `void`
+
+### `closeFinding(id)`
+
+Marks a PAC finding as closed.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Finding identifier |
+
+**Returns:** `void`
+
+---
+
+## Evidence methods
+
+### `addEvidence(evidence)`
+
+Adds a new evidence item to the register.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `evidence` | `Evidence` | Evidence object — see Evidence shape above |
+
+**Returns:** `void`
+
+### `deleteEvidence(id)`
+
+Removes an evidence item permanently.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | `string` | Evidence identifier |
+
+**Returns:** `void`
+
+---
+
+## Persistence
+
+The store uses the Zustand `persist` middleware backed by `localStorage`.
+
+| Setting | Value |
+|---|---|
+| Storage key | `'sgsi-storage'` |
+| Storage backend | `localStorage` |
+| Middleware | `zustand/middleware/persist` |
+
+All state — including tenant data, requirement states, assets, risks, controls, evidence, and findings — is automatically serialized to `localStorage` on every state change and rehydrated on page load.
+
+<Warning>
+  `localStorage` is browser-scoped and not shared between devices or users. Use the PDF export or SoA export features to create portable backups of your ISMS data.
+</Warning>
+
+<Note>
+  The `localStorage` cap is typically 5–10 MB depending on the browser. For most ISMS implementations this limit is not a concern, but organisations with very large evidence or finding lists should monitor storage usage.
+</Note>

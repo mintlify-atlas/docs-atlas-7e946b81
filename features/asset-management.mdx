@@ -1,0 +1,124 @@
+---
+title: "Asset management"
+description: "Maintain a classified information asset inventory linked to risk assessments."
+---
+
+The Asset Management module provides an inventory of your organisation's information assets. Each asset is classified by type, assigned an owner, and scored on confidentiality, integrity, and availability. Criticality is derived automatically from these scores and drives prioritisation in the [Risk Management](/features/risk-management) module.
+
+## Asset inventory
+
+The inventory is displayed as a table. Each row represents one asset with its classification attributes and calculated criticality.
+
+### Default assets
+
+ISOwl ships with four pre-configured example assets to illustrate the data model:
+
+| ID | Name | Type | Owner | C | I | A | Criticality |
+|---|---|---|---|---|---|---|---|
+| A001 | Customer Database | Information | CISO | 3 | 3 | 3 | Critical |
+| A002 | Primary ERP Server | Hardware | CISO | 2 | 3 | 2 | Critical |
+| A003 | Mobile App Source Code | Software | CISO | 3 | 2 | 1 | Critical |
+| A004 | Management Offices | Infrastructure | CISO | 1 | 1 | 1 | Normal |
+
+<Note>
+  Default assets are examples only. Replace or remove them to reflect your organisation's actual asset inventory before conducting a formal risk assessment.
+</Note>
+
+## Adding an asset
+
+<Steps>
+  <Step title="Open the Asset Management page">
+    Navigate to **Assets** in the sidebar.
+  </Step>
+  <Step title="Click Add asset">
+    Click the **Add asset** button in the page header to open the asset creation form.
+  </Step>
+  <Step title="Enter the asset name">
+    Provide a descriptive name that clearly identifies the asset (e.g. *Customer Database*, *Office Wi-Fi Network*).
+  </Step>
+  <Step title="Select the asset type">
+    Choose one of the six asset types:
+
+    | Type | Examples |
+    |---|---|
+    | Information | Databases, customer records, contracts |
+    | Hardware | Servers, laptops, mobile devices |
+    | Software | Applications, operating systems, SaaS tools |
+    | Infrastructure | Network equipment, data centres, offices |
+    | Services | Cloud providers, outsourced services |
+    | People | Key personnel, roles with privileged access |
+  </Step>
+  <Step title="Assign an owner">
+    Enter the name or role of the person responsible for this asset (e.g. *CISO*, *IT Manager*).
+  </Step>
+  <Step title="Score confidentiality, integrity, and availability">
+    Set each CIA dimension on a scale of 1 to 3:
+
+    | Score | Level | Description |
+    |---|---|---|
+    | 1 | Low | Breach has minimal impact |
+    | 2 | Medium | Breach has significant but recoverable impact |
+    | 3 | High | Breach has severe or irreversible impact |
+
+    Criticality is calculated automatically as:
+
+    ```
+    Criticality = max(Confidentiality, Integrity, Availability)
+    ```
+  </Step>
+  <Step title="Save the asset">
+    Click **Save** to add the asset to the inventory. It is immediately available in the asset selector within the Risk Management form.
+  </Step>
+</Steps>
+
+## Criticality levels
+
+Criticality is derived from the highest CIA score and used to colour-code assets throughout the application:
+
+| Max CIA score | Criticality | Color |
+|---|---|---|
+| 3 | Critical | Rose (red) |
+| 2 | Important | Amber (yellow) |
+| 1 | Normal | Emerald (green) |
+
+## Editing and deleting assets
+
+<Tabs>
+  <Tab title="Edit an asset">
+    Click the edit icon on any asset row to open the asset edit form. All fields — name, type, owner, and CIA scores — can be updated. Changes take effect immediately and are reflected in any linked risk entries.
+  </Tab>
+  <Tab title="Delete an asset">
+    Click the delete icon on the asset row and confirm the action.
+
+    <Warning>
+      Deleting an asset permanently removes it and all associated risk entries from the register. This action cannot be undone. Export a PDF report before deleting assets with linked risks.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Link between assets and risks
+
+Every risk in the [Risk Management](/features/risk-management) module must be linked to an asset. This ensures that:
+
+- Risk exposure can be attributed to specific assets.
+- Deleting an asset also removes orphaned risks.
+- High-criticality assets can be prioritised for risk treatment.
+
+To see all risks associated with a specific asset, open the Risk Management page and filter by asset name.
+
+## Frequently asked questions
+
+<AccordionGroup>
+  <Accordion title="Can I import assets from a spreadsheet?">
+    Bulk import is not currently supported. Assets must be added individually through the form. You can use the default example assets as a starting point and edit them to match your inventory.
+  </Accordion>
+  <Accordion title="What does an availability score of 1 mean for a critical database?">
+    A score of 1 on availability means that short-term unavailability of this asset has minimal business impact. If the database underpins core business operations, the availability score should be 3. Ensure CIA scores reflect your actual business context.
+  </Accordion>
+  <Accordion title="Can an asset belong to more than one risk?">
+    Yes. A single asset can be linked to multiple risk entries. For example, a customer database might have separate risks for ransomware, accidental deletion, and unauthorised access.
+  </Accordion>
+  <Accordion title="How are assets used in the compliance modules?">
+    Assets are used as the foundation for risk assessments in the Risk Management module and in Clause 6 of the Clauses module. They are not directly linked to individual Annex A controls, but high-criticality assets should inform which controls you prioritise in the SoA.
+  </Accordion>
+</AccordionGroup>

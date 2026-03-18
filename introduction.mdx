@@ -1,0 +1,111 @@
+---
+title: 'Introduction'
+description: 'ISOwl is an ISO 27001 GRC Dashboard that replaces spreadsheet-based ISMS tracking with a structured, module-driven workspace for agencies, security teams, and auditors.'
+---
+
+## What is ISOwl?
+
+ISOwl is a browser-based **Governance, Risk, and Compliance (GRC) dashboard** purpose-built for ISO 27001 Information Security Management Systems. It gives security practitioners a single workspace to track clause conformance, evaluate Annex A controls, manage assets, assess risks, collect evidence, and generate executive reports — without a backend server or database.
+
+All state is persisted locally in the browser. No account registration, no cloud sync, no data leaves your machine.
+
+## The problem it solves
+
+Most small-to-medium GRC programs rely on shared spreadsheets to track ISMS requirements. Spreadsheets have no audit trail, no role separation, no structured risk register, and produce inconsistent reports. ISOwl replaces that approach with:
+
+- Structured clause-by-clause conformance tracking (ISO 27001:2022 Clauses 4–10)
+- A full Annex A control library (93 controls across four themes)
+- A risk register linked to assets and controls
+- Evidence collection with lifecycle tracking
+- PDF executive report export
+- Multi-tenant workspaces for consulting agencies managing several clients
+
+## Who it's for
+
+<Columns cols={2}>
+  <Card title="GRC agencies" icon="building">
+    Manage multiple client ISMS workspaces from a single login. Switch between agency and client tenants without logging out.
+  </Card>
+  <Card title="Internal security teams" icon="shield">
+    Track your organisation's own ISO 27001 implementation, from gap analysis through certification readiness.
+  </Card>
+  <Card title="Auditors" icon="magnifying-glass">
+    Review clause conformance, control implementation, and evidence in read-only mode without risk of accidental changes.
+  </Card>
+  <Card title="Executive leadership" icon="chart-bar">
+    View the executive dashboard and export PDF reports summarising ISMS posture, risk exposure, and control coverage.
+  </Card>
+</Columns>
+
+## Standards supported
+
+| Standard | Scope |
+|---|---|
+| **ISO 27001:2022** | ISMS requirements — Clauses 4–10 |
+| **ISO 27002:2022** | Information security controls — Annex A (93 controls) |
+| **ISO 19011:2018** | Guidelines for auditing management systems |
+| **ISO 31000:2018** | Risk management principles and guidelines |
+| **ISO 27005:2022** | Information security risk management |
+
+## Key modules
+
+<Columns cols={2}>
+  <Card title="Executive Dashboard" icon="gauge" href="/features/dashboard">
+    High-level KPIs: clause conformance percentage, control implementation rate, open risks, and pending evidence.
+  </Card>
+  <Card title="Clauses 4–10" icon="list-check" href="/features/clauses">
+    Requirement-level tracking for all mandatory ISO 27001 clauses. Mark each requirement as Implemented, Partial, or Not Implemented.
+  </Card>
+  <Card title="Annex A Controls" icon="shield-check" href="/features/annex-a">
+    Evaluate all 93 controls across Organisational, People, Physical, and Technological themes.
+  </Card>
+  <Card title="Asset Management" icon="server" href="/features/asset-management">
+    Maintain an inventory of information assets with classification, ownership, and risk linkage.
+  </Card>
+  <Card title="Risk Assessment" icon="triangle-exclamation" href="/features/risk-management">
+    Identify, score, and treat information security risks using an ISO 31000/27005-aligned register.
+  </Card>
+  <Card title="Audit Management" icon="clipboard-list" href="/features/audit">
+    Plan and track internal audit cycles, findings, and corrective actions per ISO 19011.
+  </Card>
+  <Card title="Evidence Repository" icon="folder-open" href="/features/evidence">
+    Attach and track documentary evidence against clauses and controls.
+  </Card>
+  <Card title="Findings & Corrective Actions" icon="arrow-trend-up" href="/features/findings">
+    Log nonconformities, opportunities for improvement, and corrective action plans.
+  </Card>
+  <Card title="BCP / DRP" icon="life-ring" href="/features/bcp-drp">
+    Document business continuity and disaster recovery procedures.
+  </Card>
+  <Card title="Security Metrics" icon="chart-line" href="/features/security-metrics">
+    Track trend data and KPIs over time with Recharts-powered visualisations.
+  </Card>
+  <Card title="Clients Admin" icon="users" href="/administration/client-management">
+    Agency-only view for creating and switching between client tenant workspaces.
+  </Card>
+</Columns>
+
+## How data is stored
+
+ISOwl is a **client-side only** application. There is no backend API, no database server, and no authentication service.
+
+- State is managed by [Zustand](https://github.com/pmndrs/zustand) with the `persist` middleware.
+- All data is written to `localStorage` under the key `sgsi-storage`.
+- Data persists across browser sessions but is **scoped to the browser and device** you are using.
+- Clearing browser storage or switching browsers will reset the application to its default state.
+
+<Warning>
+  Because data lives in `localStorage`, it is not backed up automatically. Export PDF reports regularly to preserve a record of your ISMS posture.
+</Warning>
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + Vite |
+| State management | Zustand with `persist` middleware |
+| Routing | React Router v7 |
+| Styling | Tailwind CSS |
+| Charts | Recharts |
+| PDF export | jsPDF |
+| Storage | Browser `localStorage` |

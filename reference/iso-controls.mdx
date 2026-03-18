@@ -1,0 +1,131 @@
+---
+title: "ISO controls"
+description: "Reference for the ISO_CONTROLS export — the 93 ISO 27002:2022 controls organized across four domains."
+---
+
+`ISO_CONTROLS` is an array exported from `src/store/isoControls.js` that contains all 93 controls defined in ISO 27002:2022. It is the authoritative source of Annex A control data throughout ISOwl.
+
+```javascript
+import { ISO_CONTROLS } from './store/isoControls';
+```
+
+## Control data shape
+
+Each element in the array has the following base shape as defined in the source file:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Control identifier in `A.X.Y` format (e.g. `A.5.1`) |
+| `domain` | `string` | Control domain (one of four values — see Domains below) |
+| `name` | `string` | Control name |
+| `description` | `string` | Short description of what the control requires |
+
+When controls are loaded into the Zustand store, three additional runtime fields are merged in with default values:
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `status` | `string` | `'No Evaluado'` | Evaluation status — updated via `updateControlStatus()` |
+| `responsible` | `string` | `''` | Responsible person or team |
+| `lastReview` | `string` | `''` | ISO date of last review |
+
+```javascript
+// Shape of a control as stored in the Zustand state
+{
+  id: 'A.5.1',
+  domain: 'Organizacionales',
+  name: 'Políticas de seguridad de la información',
+  description: 'Se deben definir, aprobar por la dirección...',
+  status: 'No Evaluado',
+  responsible: '',
+  lastReview: ''
+}
+```
+
+## Domains
+
+ISO 27002:2022 organizes its 93 controls into four thematic domains (called "themes" in the standard). ISOwl uses the Spanish domain names as defined in `isoControls.js`.
+
+| Domain (Spanish) | Theme (English) | ID range | Control count |
+|---|---|---|---|
+| Organizacionales | Organizational | A.5.x | 37 |
+| Personas | People | A.6.x | 8 |
+| Físicos | Physical | A.7.x | 14 |
+| Tecnológicos | Technological | A.8.x | 34 |
+| **Total** | | | **93** |
+
+<Info>
+  The control count per domain matches the ISO 27002:2022 edition. Earlier editions of ISO 27002 used 14 domains and 114 controls. ISOwl implements the 2022 restructured version exclusively.
+</Info>
+
+## Usage across the app
+
+<Columns cols={2}>
+  <Card title="Store initialization" icon="database">
+    `ISO_CONTROLS` is used to seed the `controls` array in the Zustand store for each new tenant. Controls are copied with default `status`, `responsible`, and `lastReview` values.
+  </Card>
+  <Card title="Annex A module" icon="shield-check">
+    The [Annex A](/features/annex-a) page reads `controls` from the store and renders each control grouped by domain. Status updates are written back via `updateControlStatus()`.
+  </Card>
+  <Card title="Dashboard metrics" icon="chart-bar">
+    `getDomainProgress()` aggregates control statuses by domain using the `domain` field. The maturity radar chart uses these aggregated scores.
+  </Card>
+  <Card title="SoA export" icon="file-export">
+    The Statement of Applicability export iterates over all 93 controls and outputs their current status and responsible fields.
+  </Card>
+</Columns>
+
+## Filtering by domain
+
+To work with controls from a specific domain, filter the array by the `domain` field:
+
+```javascript
+import { ISO_CONTROLS } from './store/isoControls';
+
+const orgControls = ISO_CONTROLS.filter(c => c.domain === 'Organizacionales');
+// 37 controls: A.5.1 through A.5.37
+
+const techControls = ISO_CONTROLS.filter(c => c.domain === 'Tecnológicos');
+// 34 controls: A.8.1 through A.8.34
+```
+
+## Example entries
+
+```javascript
+[
+  {
+    id: 'A.5.1',
+    domain: 'Organizacionales',
+    name: 'Políticas de seguridad de la información',
+    description: 'Se deben definir, aprobar por la dirección...'
+  },
+  {
+    id: 'A.6.1',
+    domain: 'Personas',
+    name: 'Selección',
+    description: '...'
+  },
+  {
+    id: 'A.7.1',
+    domain: 'Físicos',
+    name: 'Perímetros de seguridad física',
+    description: '...'
+  },
+  {
+    id: 'A.8.1',
+    domain: 'Tecnológicos',
+    name: 'Dispositivos de punto final del usuario',
+    description: '...'
+  }
+]
+```
+
+## Related references
+
+<Columns cols={2}>
+  <Card title="ISO 27002 standard" icon="book" href="/reference/iso-27002">
+    Background on the ISO 27002:2022 standard, its four themes, and the purpose of each control domain.
+  </Card>
+  <Card title="Store reference" icon="database" href="/reference/store">
+    Full reference for `updateControlStatus()` and the `controls` state field in the Zustand store.
+  </Card>
+</Columns>

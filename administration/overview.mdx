@@ -1,0 +1,69 @@
+---
+title: "Multi-Tenant Administration"
+description: "How ISOwl separates agency and client workspaces to keep ISMS data fully isolated."
+---
+
+ISOwl is built for GRC agencies, managed service providers (MSPs), and consulting firms that manage ISO 27001 programs for multiple organizations at once. The multi-tenant architecture gives each client a completely isolated ISMS instance while letting your team switch between workspaces from a single login.
+
+## How tenants work
+
+Every ISOwl deployment has two types of workspace:
+
+<Columns cols={2}>
+  <Card title="Agency workspace" icon="building">
+    Your firm's own ISMS. Labelled **Agencia Matriz (Nosotros)** by default. All agency administrators operate from this workspace and can navigate to any client workspace.
+  </Card>
+  <Card title="Client workspaces" icon="users">
+    One isolated ISMS instance per client. Each workspace holds its own clauses, controls, assets, risks, audits, evidence, and findings — completely separate from every other tenant.
+  </Card>
+</Columns>
+
+## Data isolation
+
+When you switch from one workspace to another, ISOwl serializes the current workspace's full state and loads the target workspace's data into the active session. No data crosses tenant boundaries during normal operation.
+
+Each tenant stores its own copy of:
+
+- Clause states (clauses 4–10)
+- Annex A controls (all 93 controls)
+- Assets and asset inventory
+- Risk register
+- Audit records
+- Evidence library
+- Findings and non-conformities
+
+<Warning>
+  Client data is isolated at the application layer. Always verify your active workspace before making changes — the workspace name is displayed in the top navigation bar.
+</Warning>
+
+## Who uses multi-tenant administration
+
+| Organization type | Typical use |
+|---|---|
+| GRC consulting firm | Manage ISMS programs for 5–50 client companies |
+| Managed service provider (MSP) | Deliver ISO 27001 readiness as a recurring service |
+| Internal audit team | Maintain separate workspaces per subsidiary or business unit |
+
+## Default tenants
+
+A fresh ISOwl installation includes two pre-configured tenants:
+
+| ID | Name | Purpose |
+|---|---|---|
+| `AGENCY` | Agencia Matriz (Nosotros) | The consulting firm's own ISMS |
+| `CLIENT_A` | Cliente Demo (Tech Corp) | Pre-loaded demo client for testing |
+
+<Info>
+  The demo client (`CLIENT_A`) uses fresh, unevaluated controls and empty data arrays. It is safe to use for onboarding and training without affecting your agency workspace.
+</Info>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Client management" icon="user-plus" href="/administration/client-management">
+    Create new client workspaces, switch between tenants, and monitor client maturity at a glance.
+  </Card>
+  <Card title="Roles and permissions" icon="shield-check" href="/administration/roles-permissions">
+    Understand what CISO, Auditor, and Owner roles can and cannot do across tenants.
+  </Card>
+</Columns>

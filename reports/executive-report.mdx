@@ -1,0 +1,92 @@
+---
+title: "Executive report"
+description: "Generate a multi-page PDF summary of your ISMS posture for board presentations and management reviews."
+---
+
+The Executive Report is a structured PDF that summarizes your organization's ISO 27001 compliance posture. It is designed for audiences who need a high-level view of ISMS performance without navigating the full dashboard — board members, senior leadership, and external stakeholders.
+
+## When to use this report
+
+- **Management reviews** — ISO 27001 clause 9.3 requires periodic management reviews of the ISMS. The Executive Report provides the structured input management needs.
+- **Board presentations** — Communicate risk posture and control maturity to non-technical decision-makers.
+- **Audit preparation** — Give an external auditor a snapshot of current compliance status before a certification or surveillance audit.
+- **Client reporting** — If you are an agency managing a client's ISMS, share progress against their ISO 27001 program.
+
+## How to generate the report
+
+<Steps>
+  <Step title="Open the Dashboard">
+    Navigate to the **Dashboard** page from the main sidebar. Ensure you are in the correct tenant workspace — the report reflects the data of the currently active workspace.
+  </Step>
+  <Step title="Click Generate Report">
+    Locate the **Generate Report** button on the Dashboard page and click it. ISOwl reads the current state of all controls, clauses, risks, and findings at that moment.
+  </Step>
+  <Step title="Download the PDF">
+    The PDF is generated in your browser and downloaded automatically. The file is named with the current date for easy filing.
+  </Step>
+</Steps>
+
+<Note>
+  The report reflects the state of your ISMS **at the time of export**. It is not updated automatically. Re-generate the report after significant changes to capture the latest status.
+</Note>
+
+## What the report includes
+
+The Executive Report is a multi-page PDF with the following sections:
+
+### Executive summary
+
+A single-page overview containing:
+
+- **Global compliance %** — Overall adherence across clauses 4–10
+- **Annex A maturity score** — Percentage of applicable controls that are implemented
+- **Implemented controls** — Count of controls marked as implemented out of total applicable controls
+
+### Clause-by-clause progress table
+
+A table listing each ISO 27001 clause (4 through 10) with:
+
+- Clause ID and name
+- Compliance progress percentage
+- Maturity level (0–5 scale)
+
+### Domain progress breakdown
+
+Annex A controls are grouped into domains (e.g., Organizational controls, People controls, Physical controls, Technological controls). This section shows:
+
+- Domain name
+- Domain maturity score
+- Total number of controls in the domain
+
+### Open findings summary
+
+A list of all findings that are currently open, providing leadership with visibility into active gaps and non-conformities.
+
+### Critical findings highlight
+
+A dedicated section for **major non-conformities** — findings classified as critical. These are called out separately to ensure they receive appropriate management attention.
+
+## Report inputs at a glance
+
+| Input | Source |
+|---|---|
+| Maturity score | Annex A controls — implemented / applicable |
+| Global compliance % | Clauses 4–10 requirement states |
+| Clause progress | Per-clause completion across all requirements |
+| Domain scores | Annex A controls grouped by domain |
+| Open findings | Findings with status = open |
+| Critical findings | Findings classified as major non-conformities |
+
+<Tip>
+  Before generating a report for a board meeting or external audience, review the Findings section to ensure all open items have accurate descriptions and assigned owners. The report reproduces this data as-is.
+</Tip>
+
+## Roles that can generate this report
+
+| Role | Can generate |
+|---|---|
+| CISO | Yes |
+| Owner | Yes |
+| Auditor | No |
+
+See [Roles and permissions](/administration/roles-permissions) for details on access control.

@@ -1,122 +1,90 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "ISOwl",
+  "theme": "linden",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#747474",
+    "light": "#0b0b0b",
+    "dark": "#b5b5b5"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "https://media.brand.dev/a2d5ce6a-e228-43ef-b15c-6aaf770efc04.svg",
+    "dark": "https://media.brand.dev/a2d5ce6a-e228-43ef-b15c-6aaf770efc04.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/z4plaje/ISOwl"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/z4plaje/ISOwl"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Core Features",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "features/dashboard",
+              "features/clauses",
+              "features/annex-a",
+              "features/risk-management",
+              "features/asset-management",
+              "features/audit",
+              "features/evidence",
+              "features/findings",
+              "features/bcp-drp",
+              "features/security-metrics"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Multi-Tenant Administration",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "administration/overview",
+              "administration/client-management",
+              "administration/roles-permissions"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Reports & Exports",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "reports/executive-report",
+              "reports/soa-export"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Data Model",
             "pages": [
-              "api-reference/introduction"
+              "reference/store",
+              "reference/iso-controls",
+              "reference/clauses-catalog"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "ISO Standards",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "reference/iso-27001",
+              "reference/iso-27002",
+              "reference/iso-31000"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

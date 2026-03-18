@@ -1,0 +1,117 @@
+---
+title: "Roles and permissions"
+description: "A complete reference for the CISO, Auditor, and Owner roles in ISOwl."
+---
+
+ISOwl has three roles. Each role defines what a user can view, create, edit, delete, and access across the platform.
+
+## Role overview
+
+<Tabs>
+  <Tab title="CISO">
+    The **CISO** role has full access across the entire platform. A CISO can:
+
+    - Create, edit, and delete records in all sections (clauses, controls, assets, risks, audits, evidence, findings)
+    - Switch between tenant workspaces
+    - Access the Clients admin page
+    - Generate and export reports (Executive Report, SoA PDF)
+
+    This role is intended for agency administrators and lead consultants who manage the ISMS program on behalf of clients.
+
+    Default credential: `admin@agencia.com`
+  </Tab>
+  <Tab title="Auditor">
+    The **Auditor** role is read-only. An Auditor can:
+
+    - View all sections: clauses, controls, assets, risks, audits, evidence, findings
+    - View reports and maturity scores
+
+    An Auditor **cannot**:
+
+    - Modify requirement states or control evaluations
+    - Add, edit, or delete evidence
+    - Create or close findings
+    - Switch tenant workspaces
+    - Access the Clients admin page
+
+    Read-only mode is enforced globally via the `isReadOnly` flag whenever the logged-in user has the Auditor role. UI controls for editing are hidden or disabled in this mode.
+
+    This role is designed for external auditors and internal audit reviewers conducting surveillance or certification audits.
+  </Tab>
+  <Tab title="Owner">
+    The **Owner** role gives full edit access within a single client workspace. An Owner can:
+
+    - Create, edit, and delete records within their own tenant
+    - Generate reports for their own workspace
+
+    An Owner **cannot**:
+
+    - Switch to other tenant workspaces
+    - Access the Clients admin page
+
+    This role is assigned to the client's own staff — typically the person responsible for their ISO 27001 program internally.
+
+    Default credential: `owner@cliente.com`
+  </Tab>
+</Tabs>
+
+## Permissions matrix
+
+| Feature | CISO | Auditor | Owner |
+|---|:---:|:---:|:---:|
+| View clauses (4–10) | Yes | Yes | Yes |
+| Edit requirement states | Yes | No | Yes |
+| View Annex A controls | Yes | Yes | Yes |
+| Edit control evaluations | Yes | No | Yes |
+| View asset inventory | Yes | Yes | Yes |
+| Add / edit / delete assets | Yes | No | Yes |
+| View risk register | Yes | Yes | Yes |
+| Add / edit / delete risks | Yes | No | Yes |
+| View audit records | Yes | Yes | Yes |
+| Create / edit audits | Yes | No | Yes |
+| View evidence library | Yes | Yes | Yes |
+| Add / delete evidence | Yes | No | Yes |
+| View findings | Yes | Yes | Yes |
+| Create / close findings | Yes | No | Yes |
+| Generate Executive Report | Yes | No | Yes |
+| Export SoA PDF | Yes | No | Yes |
+| Switch tenant workspaces | Yes | No | No |
+| Access Clients admin page | Yes | No | No |
+
+## Read-only mode for Auditors
+
+When an Auditor logs in, ISOwl sets the `isReadOnly` flag to `true` for the session. This flag is checked before rendering any edit control across the application. Buttons, forms, and inline editors that would modify data are hidden or disabled automatically — no additional configuration is required.
+
+<Info>
+  Read-only mode applies to the entire session. It cannot be partially lifted for specific sections without changing the user's role assignment.
+</Info>
+
+## Role and tenant type mapping
+
+Each user account has both a **role** and a **tenant type**. The tenant type controls whether the user can access multi-tenant features.
+
+| Account | Role | Tenant type | Can access /clients |
+|---|---|---|---|
+| `admin@agencia.com` | CISO | AGENCY | Yes |
+| `owner@cliente.com` | OWNER | CLIENT | No |
+
+<Note>
+  The `/clients` route performs a server-side check for `authUser.type === 'AGENCY'`. Users with the CLIENT tenant type are redirected away from this page regardless of their role.
+</Note>
+
+## Frequently asked questions
+
+<AccordionGroup>
+  <Accordion title="Can an Auditor export reports?">
+    No. Report generation (Executive Report PDF and SoA export) is restricted to the CISO and Owner roles. Auditors can view the data that feeds into reports but cannot trigger an export.
+  </Accordion>
+  <Accordion title="Can an Owner manage other client workspaces?">
+    No. Owner-role users are scoped to their own tenant. They cannot see other client workspaces, switch tenants, or access the Clients admin page.
+  </Accordion>
+  <Accordion title="How do I change a user's role?">
+    Role assignments are managed in the authentication configuration. Contact your ISOwl administrator to update role assignments for your team.
+  </Accordion>
+  <Accordion title="What happens if an Auditor tries to edit a control?">
+    The edit controls are not rendered for Auditor sessions. If the request reaches the application layer regardless, the `isReadOnly` check prevents the state update from being applied.
+  </Accordion>
+</AccordionGroup>
