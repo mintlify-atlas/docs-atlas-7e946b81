@@ -1,0 +1,116 @@
+---
+title: "Continuous Improvement"
+description: "Manage corrective and improvement action plans with root cause analysis, a 6-stage status pipeline, and progress tracking (ISO 27001 Clause 10)."
+---
+
+The Continuous Improvement module implements **ISO 27001 Clause 10 — Mejora**. It provides a structured workflow for creating, tracking, and closing improvement actions derived from audit findings, risk assessments, or internal initiatives. Each action follows a 6-stage pipeline from identification through closure.
+
+<Info>
+  The Improvement module is distinct from the [Findings & PAC module](/features/findings). Findings tracks individual corrective action plans linked to specific non-conformities. The Improvement module manages broader improvement initiatives with formal root cause analysis and multi-stage lifecycle tracking.
+</Info>
+
+## Status pipeline
+
+Every improvement action passes through six stages:
+
+| Stage | Description |
+|---|---|
+| **Identificado** | Action has been recorded but analysis has not started. |
+| **Análisis de Causa** | Root cause analysis is underway. |
+| **Plan Definido** | A corrective or improvement plan has been documented. |
+| **En Ejecución** | The plan is being implemented. |
+| **Verificación** | Implementation is being verified for effectiveness. |
+| **Cerrado** | Action is complete and verified. |
+
+The pipeline bar at the top of the page shows the count of actions in each stage and acts as a filter — click any stage to show only those actions.
+
+## Root cause analysis methods
+
+When registering an action, select the root cause analysis methodology being applied:
+
+| Method | Description |
+|---|---|
+| **5 Porqués** | Iterative questioning to trace a problem to its root cause |
+| **Ishikawa** | Cause-and-effect (fishbone) diagram |
+| **Pareto** | 80/20 analysis to identify the most significant causes |
+| **FMEA** | Failure Mode and Effects Analysis |
+| **Otro** | Any other methodology |
+
+## Registering a new improvement action
+
+<Steps>
+  <Step title="Open the Improvement module">
+    Navigate to **Mejora Continua** in the sidebar (route `/improvement`).
+  </Step>
+  <Step title="Click Nueva Acción">
+    Click the **Nueva Acción** button in the page header to expand the registration form.
+  </Step>
+  <Step title="Fill in the action details">
+    Complete the required fields:
+
+    | Field | Description |
+    |---|---|
+    | **Título** | Short, descriptive title for the improvement action |
+    | **Método de Causa Raíz** | Select the root cause analysis method to apply |
+    | **Responsable** | Person or team accountable for executing the plan |
+    | **Fecha Límite** | Target completion date |
+    | **Hallazgo Vinculado** | Optionally link to an existing finding from the PAC module |
+    | **Causa Raíz Identificada** | Documented root cause from the analysis |
+    | **Plan de Acción** | Step-by-step description of the corrective or improvement actions |
+  </Step>
+  <Step title="Submit the action">
+    Click **Registrar**. The action is created with status **Identificado** and progress at **0%**.
+
+    The action ID is auto-generated following the pattern `MC-001`, `MC-002`, etc.
+  </Step>
+</Steps>
+
+## Tracking progress
+
+Each action card in the list shows:
+
+- **ID** and **title**
+- **Current stage** badge
+- **Responsible** and **due date**
+- **Progress bar** (0–100%)
+- **Vencido** (overdue) alert if the due date has passed and the action is not closed
+
+Click any action card to expand it and view the full root cause analysis and action plan. From the expanded view, you can advance the action to a new stage by clicking any stage button in the status row.
+
+<Tip>
+  Advancing an action to **Cerrado** automatically sets its progress to 100%.
+</Tip>
+
+## Linking to findings
+
+When registering an action, you can link it to an existing finding from the [Findings & PAC module](/features/findings). The **Hallazgo Vinculado** dropdown lists all registered findings by ID and description. This link provides traceability from the root cause analysis back to the originating audit finding.
+
+## Default example actions
+
+ISOwl ships with two pre-configured example actions to illustrate the workflow:
+
+| ID | Title | Method | Responsible | Status | Progress |
+|---|---|---|---|---|---|
+| MC-001 | Implementar capacitación en seguridad | 5 Porqués | CISO | En Ejecución | 45% |
+| MC-002 | Actualización de política de contraseñas | Ishikawa | Director TI | Plan Definido | 20% |
+
+<Note>
+  Unlike other modules, improvement actions are stored in local React state and are **not persisted** to `localStorage` via the Zustand store. Actions reset to defaults on page reload. For persistent corrective action tracking, use the [Findings & PAC module](/features/findings).
+</Note>
+
+## Related modules
+
+<CardGroup cols={2}>
+  <Card title="Findings & Corrective Actions" icon="list-check" href="/features/findings">
+    Register and track PAC items derived from audit findings. Link findings to improvement actions for full traceability.
+  </Card>
+  <Card title="Internal Audit" icon="magnifying-glass" href="/features/audit">
+    Log audit findings that generate the non-conformities addressed by improvement actions.
+  </Card>
+  <Card title="Security Metrics" icon="chart-bar" href="/features/security-metrics">
+    Monitor closure rates and overdue findings to identify where improvement actions are needed.
+  </Card>
+  <Card title="ISO 27001 Reference" icon="book" href="/reference/iso-27001">
+    Clause 10 — Mejora covers corrective actions, nonconformity management, and continual improvement requirements.
+  </Card>
+</CardGroup>

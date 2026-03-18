@@ -9,14 +9,14 @@ The Risk Management module provides a structured risk register and a 5×5 visual
 
 The page is split into two panels:
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card title="Risk assessment form" icon="pen-to-square">
-    A form for registering new risks. Fill in the asset, threat, vulnerability, scores, and treatment details, then save to add the risk to the register.
+    A form for registering new risks. Select the asset, choose the compromised CIA pillars, set probability and impact, then define a treatment strategy with one or more Annex A controls.
   </Card>
   <Card title="Risk heat map" icon="grid-2">
-    A 5×5 matrix plotting all registered risks by their residual likelihood and impact. Colour zones indicate the severity level.
+    A 5×5 matrix plotting all registered risks by their residual probability and impact. Color zones indicate severity. Updates in real time as you fill the form.
   </Card>
-</Columns>
+</CardGroup>
 
 ## Registering a risk
 
@@ -25,43 +25,63 @@ The page is split into two panels:
     Navigate to **Risk** in the sidebar. The risk assessment form is on the left and the heat map on the right.
   </Step>
   <Step title="Select the asset">
-    Choose the affected asset from the **Asset** dropdown. The list is populated from your [Asset Inventory](/features/asset-management). If the asset does not exist yet, add it there first.
+    Choose the affected asset from the **Activo Afectado** dropdown. The list is populated from your [Asset Inventory](/features/asset-management). If the asset does not exist yet, add it there first.
+
+    <Tip>
+      After selecting an asset, the **Impact** field is pre-filled based on the asset's maximum CIA score for the selected pillars.
+    </Tip>
   </Step>
-  <Step title="Describe the threat and vulnerability">
-    - **Threat** — the event or actor that could cause harm (e.g. *Ransomware*, *Accidental data deletion*).
-    - **Vulnerability** — the weakness the threat exploits (e.g. *No backup policy*, *Unpatched systems*).
+  <Step title="Select the compromised pillar(s)">
+    Toggle one or more CIA pillars to indicate which security dimension the risk affects:
+
+    | Pillar | Description |
+    |---|---|
+    | **C — Confidencialidad** | The risk compromises data secrecy |
+    | **I — Integridad** | The risk compromises data accuracy or completeness |
+    | **D — Disponibilidad** | The risk compromises system or data availability |
+
+    At least one pillar must remain selected at all times. Multiple pillars can be active simultaneously (multi-pillar risk).
   </Step>
   <Step title="Score inherent risk">
-    Set the **Likelihood** (1–5) and **Impact** (1–5) for the risk before any controls are applied.
-
-    The inherent risk score is calculated automatically:
+    Set **Probabilidad** (1–5) and **Impacto** (1–5) for the risk before any controls are applied.
 
     ```
-    Inherent risk = Likelihood × Impact
+    Inherent risk = Probabilidad × Impacto
     ```
+
+    Risks with an inherent score ≥ 5 are classified as **Alto (Inaceptable)** and require formal treatment.
   </Step>
   <Step title="Choose a treatment strategy">
-    Select one of the four ISO 31000-aligned treatment options:
+    For risks with inherent score ≥ 5, treatment is mandatory. Select from four ISO 31000-aligned options:
 
     | Treatment | Description |
     |---|---|
-    | Mitigate | Reduce likelihood or impact through controls |
-    | Accept | Acknowledge the risk and take no further action |
-    | Transfer | Shift risk to a third party (e.g. insurance, outsourcing) |
-    | Avoid | Eliminate the activity that causes the risk |
+    | **Mitigar** | Apply Annex A controls to reduce likelihood and impact |
+    | **Aceptar** | Formally accept the risk with justification |
+    | **Transferir** | Shift risk to a third party (e.g. cyber insurance, outsourcing) |
+    | **Evitar** | Stop the activity that gives rise to the risk |
+
+    For **Aceptar**, **Transferir**, and **Evitar**, you must provide a written justification explaining the management decision.
   </Step>
-  <Step title="Describe the mitigation control (if mitigating)">
-    If the treatment is **Mitigate**, enter the specific control or measure being applied in the **Mitigation control** field.
-  </Step>
-  <Step title="Score residual risk">
-    After describing the treatment, set the **Residual likelihood** and **Residual impact** to reflect the remaining risk after controls are applied.
+  <Step title="Add Annex A mitigation controls (if Mitigar)">
+    If the treatment is **Mitigar**, you must add at least one control from the Annex A library:
+
+    1. Select a control from the **Buscar un Control Anexo A** dropdown.
+    2. Set the **Eficacia del Control** (10–100%) using the slider.
+    3. Click **+ Añadir Control** to add it to the mitigation stack.
+    4. Repeat to add multiple controls (defense-in-depth).
+
+    **Combined efficacy** is calculated using the defense-in-depth formula:
 
     ```
-    Residual risk = Residual likelihood × Residual impact
+    Combined failure rate = ∏(1 − efficacy_i / 100) for each control
+    Combined efficacy = (1 − combined failure rate) × 100
     ```
+
+    The form shows the resulting **Residual Risk** score in real time.
   </Step>
   <Step title="Save the risk">
-    Click **Add risk** to save the entry. The risk appears in the heat map immediately.
+    Click **Registrar Evaluación** to save the entry. The risk appears in the heat map and the register table immediately.
   </Step>
 </Steps>
 
@@ -84,24 +104,24 @@ The heat map plots every registered risk on a 5×5 grid with **Probability** on 
 
 ## Risk data reference
 
-Each risk entry contains the following fields:
+Each risk entry stored in the register contains the following fields:
 
 | Field | Type | Description |
 |---|---|---|
-| `id` | string | Auto-generated identifier (e.g. R001) |
+| `id` | string | Auto-generated identifier (e.g. `R001`) |
 | `assetId` | string | Linked asset identifier |
-| `assetName` | string | Display name of the linked asset |
-| `threat` | string | Description of the threat |
-| `vulnerability` | string | Description of the weakness |
-| `likelihood` | 1–5 | Inherent likelihood score |
-| `impact` | 1–5 | Inherent impact score |
-| `inherentRisk` | 1–25 | Likelihood × Impact |
-| `treatment` | enum | Mitigate, Accept, Transfer, or Avoid |
-| `mitigationControl` | string | Description of the applied control |
-| `residualLikelihood` | 1–5 | Likelihood after treatment |
-| `residualImpact` | 1–5 | Impact after treatment |
-| `residualRisk` | 1–25 | Residual likelihood × Residual impact |
+| `pillars` | string[] | Compromised CIA pillars, e.g. `['C', 'I']` |
+| `probability` | 1–5 | Inherent probability score |
+| `impact` | 1–5 | Inherent impact score (auto-set from asset CIA) |
+| `treatmentOption` | enum | `Mitigar` \| `Aceptar` \| `Transferir` \| `Evitar` |
+| `treatmentJustification` | string | Required justification for non-Mitigar treatments |
+| `controls` | `{id, efficacy}[]` \| null | Applied Annex A controls with efficacy % (Mitigar only) |
+| `residualRisk` | 1–25 | Residual score after applying controls |
 | `date` | ISO date | Date the risk was registered |
+
+<Note>
+  The `controls` field stores an array of objects — one per Annex A control — rather than a single text description. Each entry has an `id` (Annex A control ID, e.g. `A.8.13`) and an `efficacy` value (10–100).
+</Note>
 
 ## Clause 6 integration
 
@@ -117,7 +137,7 @@ The risk assessment form and heat map are also embedded directly inside **Clause
     A residual risk score of 1 means both residual likelihood and residual impact are set to 1, the minimum values. This indicates the risk is considered negligible after treatment. Verify that the stated control actually achieves this level of reduction before accepting the score.
   </Accordion>
   <Accordion title="How do I link a risk to an Annex A control?">
-    Use the **Mitigation control** field to reference the Annex A control ID (e.g. *A.8.13 — Information backup*). Formal linkage between the risk register and the Annex A control table is not yet automated — it is managed through consistent naming conventions.
+    When treatment is **Mitigar**, select controls directly from the Annex A dropdown in the risk form. Each selected control is stored by its Annex A ID (e.g. `A.8.13`) with its assigned efficacy percentage. The combined efficacy of all selected controls determines the residual risk score.
   </Accordion>
   <Accordion title="Is there a limit to the number of risks I can register?">
     No hard limit is enforced. However, `localStorage` has a browser-imposed storage cap (typically 5–10 MB). For most organisations, this limit is well above what a realistic risk register requires.

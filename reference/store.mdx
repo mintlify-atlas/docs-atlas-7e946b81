@@ -101,11 +101,11 @@ The following fields reflect the **currently active tenant**. They are updated a
 |---|---|---|
 | `id` | `string` | Asset identifier |
 | `name` | `string` | Asset name |
-| `type` | `string` | Asset type (e.g. server, application) |
+| `type` | `string` | Asset type (e.g. `Información`, `Hardware`, `Software`, `Infraestructura`) |
 | `owner` | `string` | Asset owner |
-| `c` | `number` | Confidentiality score 1–5 |
-| `i` | `number` | Integrity score 1–5 |
-| `d` | `number` | Availability score 1–5 |
+| `c` | `number` | Confidentiality score 1–3 |
+| `i` | `number` | Integrity score 1–3 |
+| `d` | `number` | Availability score 1–3 |
 
 #### Risks
 
@@ -117,19 +117,15 @@ The following fields reflect the **currently active tenant**. They are updated a
 
 | Field | Type | Description |
 |---|---|---|
-| `id` | `string` | Auto-generated identifier |
+| `id` | `string` | Auto-generated identifier (e.g. `R001`) |
 | `assetId` | `string` | Linked asset ID |
-| `assetName` | `string` | Display name of linked asset |
-| `threat` | `string` | Threat description |
-| `vulnerability` | `string` | Vulnerability description |
-| `likelihood` | `number` | Inherent likelihood 1–5 |
+| `pillars` | `string[]` | Compromised CIA pillars (e.g. `['C', 'I']`) |
+| `probability` | `number` | Inherent probability 1–5 |
 | `impact` | `number` | Inherent impact 1–5 |
-| `inherentRisk` | `number` | `likelihood × impact` (1–25) |
-| `treatment` | `string` | Treatment strategy |
-| `mitigationControl` | `string` | Applied control description |
-| `residualLikelihood` | `number` | Residual likelihood 1–5 |
-| `residualImpact` | `number` | Residual impact 1–5 |
-| `residualRisk` | `number` | `residualLikelihood × residualImpact` (1–25) |
+| `treatmentOption` | `string` | `'Mitigar'` \| `'Aceptar'` \| `'Transferir'` \| `'Evitar'` |
+| `treatmentJustification` | `string` | Management justification (non-Mitigar treatments) |
+| `controls` | `Array<{ id: string, efficacy: number }> \| null` | Applied Annex A controls with efficacy % |
+| `residualRisk` | `number` | Residual risk score after applying controls (1–25) |
 | `date` | `string` | ISO date the risk was registered |
 
 #### Audits
@@ -185,7 +181,7 @@ The following fields reflect the **currently active tenant**. They are updated a
 | `dueDate` | `string` | Target closure date |
 | `progress` | `number` | Completion percentage 0–100 |
 | `closingEvidence` | `string` | Evidence reference for closure |
-| `status` | `string` | Finding status |
+| `status` | `string` | `'Abierto'` \| `'En Tratamiento'` \| `'Cerrado'` |
 | `createdAt` | `string` | ISO date the finding was created |
 
 ---
@@ -397,9 +393,9 @@ Calculates the criticality score for an asset given its CIA scores.
 
 | Parameter | Type | Description |
 |---|---|---|
-| `c` | `number` | Confidentiality score 1–5 |
-| `i` | `number` | Integrity score 1–5 |
-| `d` | `number` | Availability score 1–5 |
+| `c` | `number` | Confidentiality score 1–3 |
+| `i` | `number` | Integrity score 1–3 |
+| `d` | `number` | Availability score 1–3 |
 
 **Returns:** `number` — `max(c, i, d)`
 
@@ -411,7 +407,7 @@ Returns the Tailwind CSS color class for a given criticality score.
 |---|---|---|
 | `criticality` | `number` | Criticality score 1–5 |
 
-**Returns:** `string` — Tailwind utility class (e.g. `'text-red-500'`).
+**Returns:** `string` — Tailwind background utility class (e.g. `'bg-rose-500'` for criticality 3, `'bg-amber-500'` for 2, `'bg-emerald-500'` for 1).
 
 ---
 

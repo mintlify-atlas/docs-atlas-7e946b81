@@ -11,14 +11,17 @@ The Findings module is ISOwl's **Corrective Action Plan (PAC)** tracker. It give
 
 ## Finding statuses
 
-<Columns cols={2}>
-  <Card title="Abierto" icon="circle-dot" color="#F97316">
-    The finding has been registered and corrective action is in progress.
-  </Card>
-  <Card title="Cerrado" icon="circle-check" color="#22C55E">
-    The finding has been resolved and closing evidence has been recorded. Progress is set to 100%.
-  </Card>
-</Columns>
+Findings move through three statuses:
+
+| Status | Description |
+|---|---|
+| **Abierto** | Finding registered; no remediation progress yet (0%). |
+| **En Tratamiento** | Remediation is underway (progress 1–99%). |
+| **Cerrado** | Finding resolved; progress is 100% and a closed timestamp is recorded. |
+
+<Info>
+  Status transitions are driven automatically by the **progress** value. Setting progress to 0 sets status to **Abierto**, any value 1–99 sets **En Tratamiento**, and 100 sets **Cerrado**. Clicking the **Cerrar** button directly sets progress to 100 and status to **Cerrado** in one action.
+</Info>
 
 ## Registering a new finding
 
@@ -102,11 +105,14 @@ As remediation work progresses, update the finding to reflect current status:
 ```mermaid
 flowchart LR
     A[Finding registered] --> B[Abierto — 0%]
-    B --> C[Progress updated]
-    C --> D{Resolved?}
-    D -->|No| C
-    D -->|Yes| E[Closing evidence added]
-    E --> F[Cerrado — 100%]
+    B --> C[Progress updated 1-99%]
+    C --> D[En Tratamiento]
+    D --> E{Progress = 100?}
+    E -->|No| D
+    E -->|Yes| F[Cerrado — 100%]
+    B --> G[Click Cerrar]
+    D --> G
+    G --> F
 ```
 
 ## Finding types and required actions
@@ -133,7 +139,7 @@ Each finding record contains the following fields:
 | `dueDate` | string | `2025-12-31` |
 | `progress` | number | `0`–`100` |
 | `closingEvidence` | string | Evidence reference |
-| `status` | string | `Abierto` \| `Cerrado` |
+| `status` | string | `Abierto` \| `En Tratamiento` \| `Cerrado` |
 | `createdAt` | ISO date | `2025-01-15T10:30:00.000Z` |
 
 ## Frequently asked questions

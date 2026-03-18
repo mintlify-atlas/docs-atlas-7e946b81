@@ -11,14 +11,17 @@ ISOwl generates the SoA as a downloadable PDF directly from your Annex A control
 
 The exported document covers all **93 Annex A controls** drawn from ISO/IEC 27002. For each control, the PDF records:
 
-| Field | Description |
+| Column | Description |
 |---|---|
-| Control ID | Annex A reference (e.g., A.5.1, A.8.24) |
-| Control name | Short title from ISO/IEC 27002 |
-| Domain | Organizational, People, Physical, or Technological |
-| Status | Current evaluation state (e.g., Implemented, In Progress, Not Applicable) |
-| Responsible person | Individual or team accountable for the control |
-| Last review date | Date the control record was last updated |
+| **ID** | Annex A reference (e.g., A.5.1, A.8.24) |
+| **Dominio** | Organizational, People, Physical, or Technological |
+| **Control de Seguridad** | Control name from ISO/IEC 27002:2022 |
+| **Estado** | Current evaluation state (Implementado, En Progreso, No Evaluado, No Aplica) |
+| **Responsable** | Individual or team accountable for the control |
+
+<Note>
+  The exported PDF uses a landscape orientation and includes a total control count footer and page numbers. The filename follows the pattern `SoA_ISO27001_<timestamp>.pdf`.
+</Note>
 
 <Info>
   Controls marked as **Not Applicable** are still included in the SoA. ISO 27001 requires that exclusions be documented and justified, not omitted.
@@ -76,10 +79,12 @@ ISO 27001 requires that the SoA be maintained as a living document. Best practic
 
 ## Roles that can export the SoA
 
+All roles can export the SoA PDF. There is no role restriction on the export button.
+
 | Role | Can export |
 |---|---|
 | CISO | Yes |
 | Owner | Yes |
-| Auditor | No |
+| Auditor | Yes |
 
 See [Roles and permissions](/administration/roles-permissions) for details on access control.

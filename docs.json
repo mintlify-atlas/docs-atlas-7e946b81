@@ -43,6 +43,7 @@
               "features/audit",
               "features/evidence",
               "features/findings",
+              "features/improvement",
               "features/bcp-drp",
               "features/security-metrics"
             ]

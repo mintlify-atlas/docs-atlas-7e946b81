@@ -42,22 +42,22 @@ Each requirement row has an expandable detail panel. To update a requirement:
 
     | Status | Meaning |
     |---|---|
-    | Not started | Work has not begun |
-    | In progress | Partially implemented |
-    | Implemented | Fully conformant |
-    | Not applicable | Requirement does not apply to your scope |
+    | **No iniciado** | Work has not begun (default) |
+    | **En progreso** | Implementation is underway |
+    | **Implementado** | Fully implemented and conformant |
+    | **No aplica** | Requirement does not apply to your ISMS scope |
   </Step>
   <Step title="Set the maturity level">
     Drag the **Maturity** slider to the appropriate level (0–5):
 
-    | Level | Label |
+    | Level | Label (Spanish) |
     |---|---|
-    | 0 | Inexistent |
-    | 1 | Initial |
-    | 2 | Repeatable |
-    | 3 | Defined |
-    | 4 | Managed |
-    | 5 | Optimised |
+    | 0 | Inexistente |
+    | 1 | Inicial |
+    | 2 | Repetible |
+    | 3 | Definido |
+    | 4 | Gestionado |
+    | 5 | Optimizado |
   </Step>
   <Step title="Assign an owner">
     Type the name or role of the person responsible for this requirement in the **Owner** field.
@@ -70,9 +70,9 @@ Each requirement row has an expandable detail panel. To update a requirement:
   </Step>
 </Steps>
 
-<Tip>
-  Requirements marked **Not applicable** are excluded from the compliance percentage calculation for that clause. Use this status carefully — auditors will expect a documented justification for any exclusion.
-</Tip>
+<Note>
+  Requirements marked **No aplica** are counted as compliant in the progress percentage — both **Implementado** and **No aplica** contribute to the clause score. Use this status only for requirements that genuinely fall outside your ISMS scope, as auditors will expect a documented justification for each exclusion.
+</Note>
 
 ## Clause 6 — Risk management integration
 

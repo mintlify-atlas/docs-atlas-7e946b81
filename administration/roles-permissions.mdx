@@ -73,8 +73,8 @@ ISOwl has three roles. Each role defines what a user can view, create, edit, del
 | Add / delete evidence | Yes | No | Yes |
 | View findings | Yes | Yes | Yes |
 | Create / close findings | Yes | No | Yes |
-| Generate Executive Report | Yes | No | Yes |
-| Export SoA PDF | Yes | No | Yes |
+| Generate Executive Report | Yes | Yes | Yes |
+| Export SoA PDF | Yes | Yes | Yes |
 | Switch tenant workspaces | Yes | No | No |
 | Access Clients admin page | Yes | No | No |
 
@@ -96,14 +96,14 @@ Each user account has both a **role** and a **tenant type**. The tenant type con
 | `owner@cliente.com` | OWNER | CLIENT | No |
 
 <Note>
-  The `/clients` route performs a server-side check for `authUser.type === 'AGENCY'`. Users with the CLIENT tenant type are redirected away from this page regardless of their role.
+  The **Clients** page performs a client-side check: `authUser.type === 'AGENCY'`. Users with the CLIENT tenant type see an "Acceso Restringido" message and cannot use the page, regardless of their role.
 </Note>
 
 ## Frequently asked questions
 
 <AccordionGroup>
   <Accordion title="Can an Auditor export reports?">
-    No. Report generation (Executive Report PDF and SoA export) is restricted to the CISO and Owner roles. Auditors can view the data that feeds into reports but cannot trigger an export.
+    Yes. Both the Executive Report PDF and the SoA export are accessible to all roles including Auditor — there is no role-based restriction on the export buttons. Auditors can generate reports for review purposes without being able to modify the underlying data.
   </Accordion>
   <Accordion title="Can an Owner manage other client workspaces?">
     No. Owner-role users are scoped to their own tenant. They cannot see other client workspaces, switch tenants, or access the Clients admin page.

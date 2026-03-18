@@ -99,7 +99,7 @@ Displays the overall completion across three states for all ISO 27001 requiremen
 
 <AccordionGroup>
   <Accordion title="Cumplimiento Global">
-    The overall compliance percentage is calculated from the status of all requirements across ISO 27001 Clauses 4 through 10. Requirements marked as implemented contribute fully; requirements in progress contribute partially; pending requirements contribute nothing.
+    The overall compliance percentage counts requirements across ISO 27001 Clauses 4 through 10 that are marked **Implementado** or **No aplica** as compliant. Formula: `(Implementado + No aplica) / total requirements × 100`. Requirements **En progreso** do not contribute to this score.
   </Accordion>
   <Accordion title="Madurez Anexo A">
     Calculated as the number of Annex A controls marked **Implementado** divided by the total number of controls that are not marked **No Aplica** (not applicable).
